@@ -7,6 +7,8 @@ from VortexDetection import Configration
 from VortexDetection.Model import (CV_DetectionVorticies_YOLOv3,loaders,
 load_checkpoint)
 from VortexDetection.PlotResult import (plot_image)
+from VortexDetection.utils import convert_yolo2rect, multi_yolo2rect, write_bbox_csv
+import cv2
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
@@ -34,6 +36,10 @@ def main():
     scaled_anchors = (torch.tensor(Configration.ANCHORS)
             * torch.tensor(Configration.R).unsqueeze(1).unsqueeze(1).repeat(1, 3, 2)
     ).to(Configration.DEVICE)
-    #plot the test image
-    plot_image(model, loader, 0.6, 0.5, scaled_anchors)
+    # write the coordinates to a 
+    bbox_array = plot_image(model, loader, 0.6, 0.5, scaled_anchors)
+    bbox_array = multi_yolo2rect(bbox_array, IMAGE_FILE_NP.shape)
+    write_bbox_csv(args.input_filename.split(".")[0]+"_normalized.csv", bbox_array)
+    #print(bbox_array)
+
 

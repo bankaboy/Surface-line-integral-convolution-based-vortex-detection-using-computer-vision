@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.patches as patches
 from VortexDetection.Model import(non_max_suppression)
 
+
 def plot_image(model, loader, thresh, iou_thresh, anchors):
     model.eval()
     x, y = next(iter(loader))
@@ -38,7 +39,15 @@ def plot_image(model, loader, thresh, iou_thresh, anchors):
 
     # Create a Rectangle patch
     count = 0
+    bbox_list = []
     for box in nms_boxes:
+
+        # extract and convert to rect format
+        bbox_coords = [box[0]]+box[2:]
+        #print(bbox_coords)
+        bbox_list.append(bbox_coords)
+
+
         count += 1
         assert len(box) == 6, "box should contain class pred, confidence, x, y, width, height"
         class_pred = box[0]
@@ -55,8 +64,11 @@ def plot_image(model, loader, thresh, iou_thresh, anchors):
         )
         # Add the patch to the Axes
         ax.add_patch(rect)
-    plt.title(f'Number of vortices is: {count}')
-    plt.show()
+    # plt.title(f'Number of vortices is: {count}')
+    # plt.show()
+
+    # return the yolo format bboxes - x,y,w,h
+    return bbox_list
 
 
 def prepare_Ped_boxes(predictions, anchors, R, is_preds=True):
