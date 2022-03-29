@@ -7,7 +7,7 @@ import math
 # the function assumes that the image supplied is grayscale (2 shape parameter)
 # np gives shape as height, width
 def convert_yolo2rect(yolo_coords, img_shape):
-    _, center_x, center_y, width, height = yolo_coords # get the yolo coords
+    center_x, center_y, width, height = yolo_coords # get the yolo coords
     start_x = int ((center_x-width/2)*img_shape[1])
     end_x = int ((center_x+width/2)*img_shape[1])
     start_y = int ((center_y-height/2)*img_shape[0])
@@ -31,8 +31,8 @@ def multi_yolo2rect(bbox_array, img_shape):
         bbox_array_new.append(np.asarray (convert_yolo2rect(bbox, img_shape)) )
     # print(bbox_array_new)
     # print(change_domain(bbox_array_new, img_shape))
-    # return bbox_array_new
-    return change_domain(bbox_array_new, img_shape) # for CIDA domain
+    return bbox_array_new
+    # return change_domain(bbox_array_new, img_shape) # for CIDA domain
 
 
 
@@ -47,3 +47,8 @@ def write_bbox_csv(filename, bbox_data):
             f.write(",")
         f.write("\n") # next box
     f.close()
+
+
+# write bounding boxes to txt for use by CIDA
+def write_bbox_txt(filename, bbox_data):
+    np.savetxt(filename, bbox_data, "%d")
