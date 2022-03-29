@@ -32,43 +32,23 @@ def plot_image(model, loader, thresh, iou_thresh, anchors):
     im = np.array(image)
     height, width, _ = im.shape
 
-    # Create figure and axes
-    fig, ax = plt.subplots(1)
-    # Display the image
-    ax.imshow(im)
 
     # Create a Rectangle patch
     count = 0
     bbox_list = []
     for box in nms_boxes:
 
-        # extract and convert to rect format
-        bbox_coords = [box[0]]+box[2:]
-        #print(bbox_coords)
-        bbox_list.append(bbox_coords)
-
-
         count += 1
         assert len(box) == 6, "box should contain class pred, confidence, x, y, width, height"
-        class_pred = box[0]
+
         box = box[2:]
-        upper_left_x = box[0] - box[2] / 2
-        upper_left_y = box[1] - box[3] / 2
-        rect = patches.Rectangle(
-            (upper_left_x * width, upper_left_y * height),
-            box[2] * width,
-            box[3] * height,
-            linewidth=1,
-            edgecolor='r',
-            facecolor="none",
-        )
-        # Add the patch to the Axes
-        ax.add_patch(rect)
-    # plt.title(f'Number of vortices is: {count}')
-    # plt.show()
+        bbox_list.append(box) # store the rect coordinates 
+        # print(box)
 
     # return the yolo format bboxes - x,y,w,h
     return bbox_list
+
+
 
 
 def prepare_Ped_boxes(predictions, anchors, R, is_preds=True):
